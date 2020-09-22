@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SRFI 212: Aliases</title>
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1"></head>
+  <body>
+    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI logo" /></a>212: Aliases</h1>
+
+    <p>by Marc Nieper-Wißkirchen</p>
+
+    <h2 id="status">Status</h2>
+
+    <p>??? the draft/final/withdrawn status of the SRFI, information on how
+      to subscribe to its mailing list, and important dates in its history.
+      The editor will add this section.</p>
+
+    <h2 id="abstract">Abstract</h2>
+
+    <p>This SRFI introduces <em>alias definitions</em>, a syntactic
+      extension.  An alias definition transfers the binding of one
+      identifier to another, effectively aliasing the identifier.</p>
+
+    <h2 id="issues">Issues</h2>
+
+    <p>None at present.</p>
+
+    <h2 id="rationale">Rationale</h2>
+
+    <p>In standard Scheme, an identifier can either name a type of
+      syntax or a location where a value can be stored.  In the former
+      case, the identifier is said to be bound to a transformer for
+      that syntax, and in the latter case, the identifier is said to
+      be bound to the location.</p>
+
+    <p>The (lexical) binding of an identifier is an expand-time
+      property of the identifier, in contrast to the (dynamic) value
+      stored in a location, which is a run-time property of the
+      location.</p>
+
+    <p>New bindings are established through variable or syntax
+      definitions.  For example, a variable definition</p>
+
+    <pre><small>    (define &langle;variable&rangle; &langle;expression&rangle;)</small></pre>
+
+    <p>creates a new location, binds the identifier
+      <code>&langle;variable&rangle;</code> to it and stores the value
+      of <code>&langle;expression&rangle;</code> in the location.</p>
+
+    <p>In particular,</p>
+
+    <pre><small>    (define &langle;variable<sub>1</sub>&rangle; &langle;variable<sub>2</sub>&rangle;)</small></pre>
+
+    <p>creates a new location
+      for <code>&langle;variable<sub>1</sub>&rangle;</code> and copies
+      the value of <code>&langle;variable<sub>2</sub>&rangle;</code>
+      into it.  Modifying subsequently the value
+      of <code>&langle;variable<sub>2</sub>&rangle;</code> won't modify the
+      value of <code>&langle;variable<sub>1</sub>&rangle;</code>.</p>
+
+    <p>In contrast, the <code>alias</code> definition introduced in
+      this SRFI, transfers an existing binding to an identifier and
+      doesn't create a new one.  For example,</p>
+
+    <pre>
+    <small>(alias (define &langle;variable<sub>1</sub>&rangle; &langle;variable<sub>2</sub>&rangle;)</small></pre>
+
+    <p>doesn't create a new location
+      for <code>&langle;variable<sub>1</sub>&rangle;</code>, but
+      binds <code>&langle;variable<sub>1</sub>&rangle;</code> to the
+      location of <code>&langle;variable<sub>2</sub>&rangle;</code>.  In
+      particular, modifying subsequently the value
+      of <code>&langle;variable<sub>2</sub>&rangle;</code> will modify the
+      value of <code>&langle;variable<sub>1</sub>&rangle;</code>
+      accordingly.</p>
+
+    <h3>Examples</h3>
+
+    <p>Aliases allow to locally alias identifiers under short names
+      without changing the expanded version of the program:</p>
+
+    <pre><small>    (define *important-global-variable* '())
+    (define (setup!)
+      (alias ls *important-global-variable*)
+      (set! ls (cons 1 ls))
+      (set! ls (cons 2 ls)))
+    (setup!)
+    *important-global-variable*                &xrArr; (2 1)</small></pre>
+
+    <p>Aliasing an unbound identifier yields an unbound
+      identifier:</p>
+
+    <pre><small>    (alias x y)
+    x             &xrArr; <i>error</i></small></pre>
+
+    <p>Rebinding the aliased identifier doesn't change the binding of
+    the aliasing identifier:</p>
+
+    <pre><small>    (let ((y +))
+      (alias x y)
+      (let ((y *))
+        (free-identifier=? #'x #'y)))   &xrArr; #f</small></pre>
+
+    <p>In particular, aliasing doesn't make the aliasing identifier
+      equivalent to the aliased one in the sense that binding one would
+      bind the other:</p>
+
+    <pre><small>    (let ((y +))
+      (alias x y)
+      (bound-identifier=? #'x #'y))   &xrArr; #f</small></pre>
+
+    <p>The following expression, however, is invalid as it is an error
+      for a definition to define an identifier whose binding has to be
+      known in order to determine the meaning of any preceeding
+      definition that belongs to the same group of (internal)
+      definitions:</p>
+
+    <pre><small>    (let ((y +))
+      (alias x y)
+      (define y *)
+        (free-identifier=? #'x #'y))   &xrArr; <i>error</i></small></pre>
+
+    <p>Aliases can also be used to alias auxiliary syntax:</p>
+
+    <pre><small>   (alias inject unquote)
+    `(list (inject (+ 1 2)) 4)   &xrArr; (list 3 4)</small></pre>
+
+    <p>In macros, they can be used to inject bindings from the macro
+    environment into the use environment:</p>
+
+    <pre><small>    (let ((y 1))
+      (let-syntax ((inject-y
+                   (syntax-rules ()
+                     ((inject-y x) (alias x y)))))
+        (let ((y 2))
+          (inject-y x)
+          (set! x (* 3 x)))
+        y))                                          &xrArr; 3</small></pre>
+
+    <p>Finally, the use of aliases is not limited to variables and
+    keywords, but can also be used with other bindings like pattern variables:</p>
+
+    <pre><small>    (syntax-case #'pear ()
+      (pvar
+       (let* ()
+         (alias fruit pvar)
+         (syntax->datum #'<!--'-->(a fruit)))))   &xrArr; (a pear)</pre></small>
+
+    <h2 id="specification">Specification</h2>
+
+    <h3>Syntax</h3>
+
+    <p>The <dfn>alias</dfn> definition is used to transfer the binding
+      of one identifier to another.  Like other definitions, it can
+      appear either at the outermost level or in a body where other
+      definitions can appear.</p>
+
+    <p><code>(alias &langle;identifier<sub>1</sub>&rangle;
+    &langle;identifier<sub>2</sub>&rangle;)</code></p>
+
+    <p>The binding
+      of <code>&langle;identifier<sub>2</sub>&rangle;</code> is
+      transferred
+      to <code>&langle;identifier<sub>1</sub>&rangle;</code>.  This
+      means that
+      if <code>&langle;identifier<sub>2</sub>&rangle;</code> is bound
+      to the location of a variable, the location of a pattern
+      variable, a type of syntax, a type of syntax parameter, or any
+      other
+      quantity, <code>&langle;identifier<sub>1</sub>&rangle;</code>
+      will be bound to the same quantity.
+      If <code>&langle;identifier<sub>2</sub>&rangle;</code> is
+      unbound, <code>&langle;identifier<sub>1</sub>&rangle;</code>
+      will be unbound as well.</p>
+
+    <h2 id="implementation">Implementation</h2>
+
+    <p>An portable Scheme implementation is not possible.  An
+      implementation of SRFI 212 is available
+      in <a href="https://www.unsyntax.org">Unsyntax</a>.</p>
+
+    <p><a href="https://cisco.github.io/ChezScheme/">Chez Scheme</a>
+    implements <code>alias</code> in its <code>chezscheme</code>
+    library.</p>
+
+    <p><a href="https://github.com/scheme-requests-for-implementation/srfi-212/tree/master/tests/srfi-212-tests.scm">Test suite for an
+    implementation.</a></p>
+
+    <h2 id="acknowledgements">Acknowledgements</h2>
+
+    <p>The author got the idea from reading the manual of Chez Scheme by
+      R. Kent Dybvig.</p>
+
+    <h2 id="copyright">Copyright</h2>
+    <p>&copy; 2020 Marc Nieper-Wißkirchen.</p>
+
+    <p>
+      Permission is hereby granted, free of charge, to any person
+      obtaining a copy of this software and associated documentation files
+      (the "Software"), to deal in the Software without restriction,
+      including without limitation the rights to use, copy, modify, merge,
+      publish, distribute, sublicense, and/or sell copies of the Software,
+      and to permit persons to whom the Software is furnished to do so,
+      subject to the following conditions:</p>
+
+    <p>
+      The above copyright notice and this permission notice (including the
+      next paragraph) shall be included in all copies or substantial
+      portions of the Software.</p>
+    <p>
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+      EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+      MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+      NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+      BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+      ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+      CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+      SOFTWARE.</p>
+
+    <hr>
+    <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
