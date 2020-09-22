@@ -76,12 +76,12 @@
     <p>creates a new location
       for <code><span class="token">variable<sub>1</sub></span></code> and copies
       the value of <code><span class="token">variable<sub>2</sub></span></code>
-      into it.  Modifying subsequently the value
+      into it.  Subsequently modifying the value
       of <code><span class="token">variable<sub>2</sub></span></code> won't modify the
       value of <code><span class="token">variable<sub>1</sub></span></code>.</p>
 
     <p>In contrast, the <code>alias</code> definition introduced in
-      this SRFI, transfers an existing binding to an identifier and
+      this SRFI transfers an existing binding to an identifier and
       doesn't create a new one.  For example,</p>
 
     <pre>
@@ -91,14 +91,14 @@
       for <code><span class="token">variable<sub>1</sub></span></code>, but
       binds <code><span class="token">variable<sub>1</sub></span></code> to the
       location of <code><span class="token">variable<sub>2</sub></span></code>.  In
-      particular, modifying subsequently the value
+      particular, subsequently modifying the value
       of <code><span class="token">variable<sub>2</sub></span></code> will modify the
       value of <code><span class="token">variable<sub>1</sub></span></code>
       accordingly.</p>
 
     <h3>Examples</h3>
 
-    <p>Aliases allow to locally alias identifiers under short names
+    <p>Aliases allow one to locally alias identifiers under short names
       without changing the expanded version of the program:</p>
 
     <pre><small>    (define *important-global-variable* '())
@@ -133,7 +133,7 @@
 
     <p>The following expression, however, is invalid as it is an error
       for a definition to define an identifier whose binding has to be
-      known in order to determine the meaning of any preceeding
+      known in order to determine the meaning of any preceding
       definition that belongs to the same group of (internal)
       definitions:</p>
 
