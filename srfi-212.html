@@ -5,7 +5,27 @@
     <title>SRFI 212: Aliases</title>
     <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
     <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
-    <meta name="viewport" content="width=device-width, initial-scale=1"></head>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1">
+    <style>
+      body
+      {
+          font-family: serif;
+      }
+      span.token
+      {
+          font-family: serif;
+      }
+      span.token::before
+      {
+          content: "〈";
+      }
+      span.token::after
+      {
+          content: "〉";
+      }
+    </style>
+  </head>
   <body>
     <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI logo" /></a>212: Aliases</h1>
 
@@ -43,37 +63,37 @@
     <p>New bindings are established through variable or syntax
       definitions.  For example, a variable definition</p>
 
-    <pre><small>    (define &langle;variable&rangle; &langle;expression&rangle;)</small></pre>
+    <pre><small>    (define <span class="token">variable</span> <span class="token">expression</span>)</small></pre>
 
     <p>creates a new location, binds the identifier
-      <code>&langle;variable&rangle;</code> to it and stores the value
-      of <code>&langle;expression&rangle;</code> in the location.</p>
+      <code><span class="token">variable</span></code> to it and stores the value
+      of <code><span class="token">expression</span></code> in the location.</p>
 
     <p>In particular,</p>
 
-    <pre><small>    (define &langle;variable<sub>1</sub>&rangle; &langle;variable<sub>2</sub>&rangle;)</small></pre>
+    <pre><small>    (define <span class="token">variable<sub>1</sub></span> <span class="token">variable<sub>2</sub></span>)</small></pre>
 
     <p>creates a new location
-      for <code>&langle;variable<sub>1</sub>&rangle;</code> and copies
-      the value of <code>&langle;variable<sub>2</sub>&rangle;</code>
+      for <code><span class="token">variable<sub>1</sub></span></code> and copies
+      the value of <code><span class="token">variable<sub>2</sub></span></code>
       into it.  Modifying subsequently the value
-      of <code>&langle;variable<sub>2</sub>&rangle;</code> won't modify the
-      value of <code>&langle;variable<sub>1</sub>&rangle;</code>.</p>
+      of <code><span class="token">variable<sub>2</sub></span></code> won't modify the
+      value of <code><span class="token">variable<sub>1</sub></span></code>.</p>
 
     <p>In contrast, the <code>alias</code> definition introduced in
       this SRFI, transfers an existing binding to an identifier and
       doesn't create a new one.  For example,</p>
 
     <pre>
-    <small>(alias (define &langle;variable<sub>1</sub>&rangle; &langle;variable<sub>2</sub>&rangle;)</small></pre>
+    <small>(alias (define <span class="token">variable<sub>1</sub></span> <span class="token">variable<sub>2</sub></span>)</small></pre>
 
     <p>doesn't create a new location
-      for <code>&langle;variable<sub>1</sub>&rangle;</code>, but
-      binds <code>&langle;variable<sub>1</sub>&rangle;</code> to the
-      location of <code>&langle;variable<sub>2</sub>&rangle;</code>.  In
+      for <code><span class="token">variable<sub>1</sub></span></code>, but
+      binds <code><span class="token">variable<sub>1</sub></span></code> to the
+      location of <code><span class="token">variable<sub>2</sub></span></code>.  In
       particular, modifying subsequently the value
-      of <code>&langle;variable<sub>2</sub>&rangle;</code> will modify the
-      value of <code>&langle;variable<sub>1</sub>&rangle;</code>
+      of <code><span class="token">variable<sub>2</sub></span></code> will modify the
+      value of <code><span class="token">variable<sub>1</sub></span></code>
       accordingly.</p>
 
     <h3>Examples</h3>
@@ -157,22 +177,22 @@
       appear either at the outermost level or in a body where other
       definitions can appear.</p>
 
-    <p><code>(alias &langle;identifier<sub>1</sub>&rangle;
-    &langle;identifier<sub>2</sub>&rangle;)</code></p>
+    <p><code>(alias <span class="token">identifier<sub>1</sub></span>
+    <span class="token">identifier<sub>2</sub></span>)</code></p>
 
     <p>The binding
-      of <code>&langle;identifier<sub>2</sub>&rangle;</code> is
+      of <code><span class="token">identifier<sub>2</sub></span></code> is
       transferred
-      to <code>&langle;identifier<sub>1</sub>&rangle;</code>.  This
+      to <code><span class="token">identifier<sub>1</sub></span></code>.  This
       means that
-      if <code>&langle;identifier<sub>2</sub>&rangle;</code> is bound
+      if <code><span class="token">identifier<sub>2</sub></span></code> is bound
       to the location of a variable, the location of a pattern
       variable, a type of syntax, a type of syntax parameter, or any
       other
-      quantity, <code>&langle;identifier<sub>1</sub>&rangle;</code>
+      quantity, <code><span class="token">identifier<sub>1</sub></span></code>
       will be bound to the same quantity.
-      If <code>&langle;identifier<sub>2</sub>&rangle;</code> is
-      unbound, <code>&langle;identifier<sub>1</sub>&rangle;</code>
+      If <code><span class="token">identifier<sub>2</sub></span></code> is
+      unbound, <code><span class="token">identifier<sub>1</sub></span></code>
       will be unbound as well.</p>
 
     <h2 id="implementation">Implementation</h2>
