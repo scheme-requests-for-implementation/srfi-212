@@ -90,8 +90,7 @@
       this SRFI transfers an existing binding to an identifier and
       doesn't create a new one.  For example,</p>
 
-    <pre>
-    <small>(alias <span class="token">variable<sub>1</sub></span> <span class="token">variable<sub>2</sub></span>)</small></pre>
+    <pre><small>    (alias <span class="token">variable<sub>1</sub></span> <span class="token">variable<sub>2</sub></span>)</small></pre>
 
     <p>doesn't create a new location
       for <code><span class="token">variable<sub>1</sub></span></code>, but
@@ -150,7 +149,7 @@
 
     <p>Aliases can also be used to alias auxiliary syntax:</p>
 
-    <pre><small>   (alias inject unquote)
+    <pre><small>    (alias inject unquote)
     `(list (inject (+ 1 2)) 4)   &xrArr; (list 3 4)</small></pre>
 
     <p>In macros, they can be used to inject bindings from the macro
@@ -203,16 +202,20 @@
 
     <h2 id="implementation">Implementation</h2>
 
-    <p>An portable Scheme implementation is not possible.  An
+    <p>A portable Scheme implementation is not possible.  An
       implementation of SRFI 212 is available
       in <a href="https://www.unsyntax.org">Unsyntax</a>.</p>
 
     <p><a href="https://cisco.github.io/ChezScheme/">Chez Scheme</a>
-    implements <code>alias</code> in its <code>chezscheme</code>
+    implements <code>alias</code> in its <code>(chezscheme)</code>
     library.</p>
 
-    <p><a href="https://github.com/scheme-requests-for-implementation/srfi-212/tree/master/tests/srfi-212-tests.scm">Test suite for an
-    implementation.</a></p>
+    <p><a href="https://www.gnu.org/software/kawa/">The Kawa Scheme
+    language</a> also contains an implementation of <code>alias</code>,
+    albeit under the name <code>define-alias</code>.</p>
+
+    <p><a href="https://github.com/scheme-requests-for-implementation/srfi-212/tree/master/tests/srfi-212-tests.sch">Test
+    suite for an implementation.</a></p>
 
     <h2 id="acknowledgements">Acknowledgements</h2>
 
