@@ -114,11 +114,9 @@
     (setup!)
     *important-global-variable*                &xrArr; (2 1)</small></pre>
 
-    <p>Aliasing an unbound identifier yields an unbound
-      identifier:</p>
+    <p>Aliasing an unbound identifier is an error.</p>
 
-    <pre><small>    (alias x y)
-    x             &xrArr; <i>error</i></small></pre>
+    <pre><small>    (alias x y)   &xrArr; <i>error</i></small></pre>
 
     <p>Rebinding the aliased identifier doesn't change the binding of
     the aliasing identifier:</p>
@@ -197,8 +195,7 @@
       quantity, <code><span class="token">identifier<sub>1</sub></span></code>
       will be bound to the same quantity.
       If <code><span class="token">identifier<sub>2</sub></span></code> is
-      unbound, <code><span class="token">identifier<sub>1</sub></span></code>
-      will be unbound as well.</p>
+      unbound, it is an error.</p>
 
     <h2 id="implementation">Implementation</h2>
 
