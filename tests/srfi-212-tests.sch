@@ -42,6 +42,8 @@
     (setup!)
     *important-global-variable*))
 
+;; This test assumes an implementation that allows aliasing an unbound
+;; identifier.
 (test-assert (let* ()
                (alias x y)
                (not (free-identifier=? #'x #'y))))
