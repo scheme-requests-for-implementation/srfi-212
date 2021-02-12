@@ -144,7 +144,7 @@
     <pre><small>    (let ((y +))
       (alias x y)
       (define y *)
-        (free-identifier=? #'x #'y))   &xrArr; <i>error</i></small></pre>
+      (free-identifier=? #'x #'y))   &xrArr; <i>error</i></small></pre>
 
     <p>Aliases can also be used to alias auxiliary syntax:</p>
 
@@ -156,8 +156,8 @@
 
     <pre><small>    (let ((y 1))
       (let-syntax ((inject-y
-                   (syntax-rules ()
-                     ((inject-y x) (alias x y)))))
+                    (syntax-rules ()
+                      ((inject-y x) (alias x y)))))
         (let ((y 2))
           (inject-y x)
           (set! x (* 3 x)))
